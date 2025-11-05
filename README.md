@@ -32,5 +32,76 @@ It demonstrates how distributed event brokers manage **throughput**, **latency**
 
 ---
 
-## 🏗️ Architecture Overview
+## ⚙️ Overview
+
+This system simulates a miniature Kafka-like environment where one service (Payments) continuously emits thousands of events per minute.  
+Other services (Orders, Notifications, Data Analytics) consume those events in parallel via **consumer groups**.
+
+A **Node.js Aggregator** collects live metrics from all consumers and streams them to a **React dashboard** that visualizes throughput, lag, and queue depths in real time.
+
+Payments → [Broker / Partitions] → {Orders, Notifications, Data Analytics}
+↓
+Node Aggregator → React UI
+
+## 🧩 Services
+
+| Service | Role | Language |
+|----------|------|-----------|
+| **Payments Service** | Produces events at a fixed or user-defined rate (e.g., 10k/min) | Java + Spring Boot |
+| **Orders Service** | Consumes events; simulates order processing | Java + Spring Boot |
+| **Notifications Service** | Consumes events; mimics message delivery | Java + Spring Boot |
+| **Data Analytics Service** | Consumes events; aggregates or logs metrics | Java + Spring Boot |
+| **Node Aggregator** | Collects live consumer stats and streams via SSE/WebSocket | Node.js |
+| **Frontend Dashboard** | Visualizes real-time event rates, consumer lag, queue depth | React + Vite |
+| **Mini-Broker** | In-memory Kafka-like broker handling partitions, offsets, backpressure | Java + Spring Boot |
+
+---
+
+## 🏗️ Architecture
+
+- **Partitioned Log Model** — Events are distributed across partitions, providing parallel consumption.
+- **Consumer Groups** — Each service has its own group; scaling consumers increases throughput.
+- **Backpressure & Rate Limiting** — Protects hot partitions from overload.
+- **Monitoring Layer** — Node Aggregator throttles metrics slightly for near-real-time updates.
+- **Full Dockerized Environment** — All seven containers communicate over a shared bridge network.
+
+---
+
+## 🧰 Repositories
+
+| Repo | Description |
+|------|--------------|
+| [main-infra](https://github.com/ayankhan/event-stream-infra) | Contains `docker-compose.yml`, environment configs |
+| [payments-service](https://github.com/ayankhan/payments-service) | Event producer |
+| [orders-service](https://github.com/ayankhan/orders-service) | Consumer service |
+| [notifications-service](https://github.com/ayankhan/notifications-service) | Consumer service |
+| [data-analytics-service](https://github.com/ayankhan/data-analytics-service) | Consumer service |
+| [node-aggregator](https://github.com/ayankhan/node-aggregator) | Real-time event forwarder |
+| [frontend-dashboard](https://github.com/ayankhan/frontend-dashboard) | React-based visualization |
+| [mini-kafka-broker](https://github.com/ayankhan/mini-kafka-broker) | In-memory broker core |
+
+---
+
+## 🚀 Run the System (One Command)
+
+After cloning all repositories into one directory, simply run:
+
+```bash```
+docker compose up
+
+This spins up all containers:
+broker → consumers → node-aggregator → frontend
+
+# Once running:
+- Visit the React dashboard at http://localhost:5173
+- Click “Start Stream” to trigger the Payments producer
+# Watch live charts for:
+- Events per second/minute
+- Queue depth & lag per service
+- Consumer performance comparison
+
+All services automatically connect to the shared virtual network and communicate internally.
+No manual setup or configuration is required.
+
+
 
