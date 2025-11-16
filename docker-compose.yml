@@ -1,0 +1,85 @@
+version: "3.9"
+
+services:
+  mini-broker:
+    image: ayankhan/mini-broker:latest
+    container_name: mini-broker
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVICE_NAME=broker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  payments-producer:
+    image: ayankhan/payments-producer:latest
+    container_name: payments-producer
+    depends_on:
+      mini-broker:
+        condition: service_healthy
+    environment:
+      - BROKER_URL=http://mini-broker:8081
+    ports:
+      - "8082:8082"
+
+  orders-consumer:
+    image: ayankhan/orders-consumer:latest
+    container_name: orders-consumer
+    depends_on:
+      mini-broker:
+        condition: service_healthy
+    environment:
+      - BROKER_URL=http://mini-broker:8081
+      - CONSUMER_GROUP=orders
+    ports:
+      - "8083:8083"
+
+  notification-consumer:
+    image: ayankhan/notification-consumer:latest
+    container_name: notification-consumer
+    depends_on:
+      mini-broker:
+        condition: service_healthy
+    environment:
+      - BROKER_URL=http://mini-broker:8081
+      - CONSUMER_GROUP=notification
+    ports:
+      - "8084:8084"
+
+  analytics-consumer:
+    image: ayankhan/analytics-consumer:latest
+    container_name: analytics-consumer
+    depends_on:
+      mini-broker:
+        condition: service_healthy
+    environment:
+      - BROKER_URL=http://mini-broker:8081
+      - CONSUMER_GROUP=analytics
+    ports:
+      - "8085:8085"
+
+  aggregator-ws:
+    image: ayankhan/aggregator-ws:latest
+    container_name: aggregator-ws
+    depends_on:
+      mini-broker:
+        condition: service_healthy
+    environment:
+      - BROKER_URL=http://mini-broker:8081
+      - WS_PORT=9000
+    ports:
+      - "9000:9000"
+
+  frontend-dashboard:
+    image: ayankhan/frontend-dashboard:latest
+    container_name: frontend-dashboard
+    depends_on:
+      aggregator-ws:
+        condition: service_started
+    environment:
+      - VITE_WS_URL=ws://localhost:9000
+    ports:
+      - "5173:5173"
