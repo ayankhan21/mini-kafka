@@ -72,7 +72,7 @@ Node Aggregator → React UI
 
 | Repo | Description |
 |------|--------------|
-| [main-infra](https://github.com/ayankhan/event-stream-infra) | Contains `docker-compose.yml`, environment configs |
+| [main-orchestrator](https://github.com/ayankhan21/mini-kafka.git) | Contains `docker-compose.yml`, environment configs |
 | [payments-service](https://github.com/ayankhan/payments-service) | Event producer |
 | [orders-service](https://github.com/ayankhan/orders-service) | Consumer service |
 | [notifications-service](https://github.com/ayankhan/notifications-service) | Consumer service |
