@@ -1,6 +1,7 @@
 # 🧩 Concurrent Event Streaming Platform (mini-Kafka)
 
-A lightweight, Kafka-inspired **event streaming platform** built with **Java (Spring Boot)** and **React**, designed to explore concepts like concurrency, partitioning, consumer groups, and performance tuning.  
+A lightweight, Kafka-inspired **event streaming platform** built with **Java** , **gPRC** and **React**, designed to explore concepts like concurrency, partitioning, consumer groups, and performance tuning.
+With the aim of achieving a throughput of between 50k - 100k events/minute, gRPC was one of the best alternatives for inter service Rest API calls.
 It demonstrates how distributed event brokers manage **throughput**, **latency**, **retention**, and **real-time monitoring** — all in a reproducible local setup.
 
 ---
@@ -47,13 +48,13 @@ Node Aggregator → React UI
 
 | Service | Role | Language |
 |----------|------|-----------|
-| **Payments Service** | Produces events at a fixed or user-defined rate (e.g., 10k/min) | Java + Spring Boot |
-| **Orders Service** | Consumes events; simulates order processing | Java + Spring Boot |
-| **Notifications Service** | Consumes events; mimics message delivery | Java + Spring Boot |
-| **Data Analytics Service** | Consumes events; aggregates or logs metrics | Java + Spring Boot |
+| **Payments Service** | Produces events at a fixed or user-defined rate (e.g., 10k/min) | Java |
+| **Orders Service** | Consumes events; simulates order processing | Java |
+| **Notifications Service** | Consumes events; mimics message delivery | Java |
+| **Data Analytics Service** | Consumes events; aggregates or logs metrics | Java |
 | **Node Aggregator** | Collects live consumer stats and streams via SSE/WebSocket | Node.js |
 | **Frontend Dashboard** | Visualizes real-time event rates, consumer lag, queue depth | React + Vite |
-| **Mini-Broker** | In-memory Kafka-like broker handling partitions, offsets, backpressure | Java + Spring Boot |
+| **Mini-Broker** | In-memory Kafka-like broker handling partitions, offsets, backpressure | Java |
 
 ---
 
